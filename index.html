@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Pogoda</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 40px;">
+    <h1>Wybierz miasto i kraj, aby sprawdzić pogodę</h1>
+    <select id="location">
+        <option value="51.2465,22.5684,Lublin,Polska">Lublin, Polska</option>
+        <option value="52.2298,21.0118,Warszawa,Polska">Warszawa, Polska</option>
+        <option value="51.5085,-0.1257,Londyn,Wielka Brytania">Londyn, Wielka Brytania</option>
+        <option value="52.5244,13.4105,Berlin,Niemcy">Berlin, Niemcy</option>
+        <option value="40.7143,-74.0060,Nowy Jork,USA">Nowy Jork, USA</option>
+    </select>
+    <button onclick="getWeather()">Sprawdź pogodę</button>
+    
+    <div id="result" style="margin-top: 20px;"></div>
+
+    <script>
+        function getWeather() {
+            const loc = document.getElementById('location').value;
+            const parts = loc.split(',');
+            const lat = parts[0], lon = parts[1], city = parts[2], country = parts[3];
+            
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const temp = data.current_weather.temperature;
+                    document.getElementById('result').innerHTML = 
+                        `<h2>Aktualna pogoda: ${city} (${country})</h2><p>Temperatura: ${temp} &deg;C</p>`;
+                })
+                .catch(error => {
+                    document.getElementById('result').innerHTML = `<p style="color:red;">Błąd: ${error}</p>`;
+                });
+        }
+    </script>
+</body>
+</html>
